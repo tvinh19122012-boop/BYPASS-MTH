@@ -8,10 +8,12 @@
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
 body{background-color:#0d1117;color:#fff;padding-bottom:120px}
 .btn-ok{background:linear-gradient(135deg,#ff4757,#ff6b81);color:#fff;border:none;padding:10px 30px;font-size:16px;font-weight:bold;border-radius:6px;cursor:pointer}
+.btn-ok:active{opacity:.8}
 .overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);display:none;justify-content:center;align-items:center;z-index:11000;padding:15px}
 .overlay.show{display:flex}
-.alert-box,.register-alert-box{background:#161b22;border:2px solid #ff4757;border-radius:12px;padding:25px 20px;text-align:center;max-width:380px;width:100%}
-.alert-box img{width:100%;border-radius:8px;margin-bottom:15px;display:block}
+.alert-box,.register-alert-box,.popup-content{background:#161b22;border:2px solid #ff4757;border-radius:12px;padding:25px 20px;text-align:center;max-width:380px;width:100%}
+.popup-content{padding:15px;max-width:400px}
+.alert-box img,.popup-content img{width:100%;border-radius:8px;margin-bottom:15px;display:block}
 .register-alert-box h3{color:#ff4757;font-size:20px;margin-bottom:10px}
 .register-alert-box p{color:#c9d1d9;font-size:14px;margin-bottom:20px}
 header{background:#161b22;padding:6px 15px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #30363d;position:sticky;top:0;z-index:99}
@@ -113,13 +115,94 @@ header{background:#161b22;padding:6px 15px;display:flex;justify-content:space-be
 .rainbow-text{background:linear-gradient(45deg,#ff4757,#ffa502,#2ed573,#1e90ff,#9b59b6,#ff4757);background-size:400% 400%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:rainbowAnimation 8s ease infinite;margin-right:35px}
 @keyframes rainbowAnimation{0%{background-position:0 50%}50%{background-position:100% 50%}100%{background-position:0 50%}}
 @media(max-width:480px){.grid-cards{grid-template-columns:repeat(2,1fr)}}
+
+/* ===== BANNER GET ACC FREE ===== */
+.getacc-banner{
+  position:relative;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  background:linear-gradient(135deg,#ff4757 0%,#e84118 50%,#ff4757 100%);
+  background-size:200% 200%;
+  border-radius:12px;
+  padding:18px 16px;
+  margin-bottom:20px;
+  cursor:pointer;
+  overflow:hidden;
+  box-shadow:0 0 0 2px rgba(255,71,87,.4),0 8px 25px rgba(255,71,87,.5);
+  animation:getaccPulse 1.8s ease-in-out infinite,getaccShift 4s ease infinite;
+}
+.getacc-banner:active{transform:scale(.98)}
+@keyframes getaccPulse{
+  0%,100%{box-shadow:0 0 0 2px rgba(255,71,87,.4),0 8px 25px rgba(255,71,87,.5)}
+  50%{box-shadow:0 0 0 6px rgba(255,71,87,.15),0 8px 30px rgba(255,71,87,.9)}
+}
+@keyframes getaccShift{
+  0%,100%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+}
+.getacc-glow{
+  position:absolute;
+  top:-50%;left:-50%;
+  width:200%;height:200%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);
+  transform:rotate(25deg);
+  animation:getaccShine 2.5s linear infinite;
+  pointer-events:none;
+}
+@keyframes getaccShine{
+  0%{transform:translateX(-100%) rotate(25deg)}
+  100%{transform:translateX(100%) rotate(25deg)}
+}
+.getacc-icon{
+  font-size:34px;
+  filter:drop-shadow(0 0 8px rgba(255,255,255,.8));
+  animation:getaccBounce .8s ease-in-out infinite alternate;
+  z-index:1;
+}
+@keyframes getaccBounce{
+  from{transform:translateY(0) rotate(-8deg)}
+  to{transform:translateY(-6px) rotate(8deg)}
+}
+.getacc-text{flex:1;z-index:1}
+.getacc-title{
+  font-size:16px;
+  font-weight:900;
+  color:#fff;
+  text-shadow:0 2px 4px rgba(0,0,0,.4);
+  letter-spacing:.5px;
+  line-height:1.2;
+}
+.getacc-sub{
+  font-size:11px;
+  color:#fff;
+  margin-top:3px;
+  font-weight:600;
+  opacity:.95;
+}
+.getacc-btn{
+  background:#fff;
+  color:#e84118;
+  font-size:13px;
+  font-weight:900;
+  padding:10px 14px;
+  border-radius:8px;
+  white-space:nowrap;
+  z-index:1;
+  box-shadow:0 4px 12px rgba(0,0,0,.3);
+  animation:getaccBlink 1s ease-in-out infinite alternate;
+}
+@keyframes getaccBlink{
+  from{transform:scale(1);opacity:1}
+  to{transform:scale(1.08);opacity:.9}
+}
 </style>
 </head>
 <body>
 
 <header>
   <div class="logo-area" onclick="showPage('home')">
-    <img src="https://files.catbox.moe/w1w6ab.jpg" alt="Logo">
+    <img src="https://files.catbox.moe/w1w6ab.jpg" alt="SikeStore">
   </div>
   <div class="nav-icons">
     <button class="icon-btn">☀️</button>
@@ -141,7 +224,7 @@ header{background:#161b22;padding:6px 15px;display:flex;justify-content:space-be
     <div class="submenu-item">○ Tài Khoản Loại 2(đang bảo trì)</div>
     <div class="submenu-item">○ Tài Khoản Nhóm(đang bảo trì)</div>
   </div>
-  <div class="menu-item" onclick="showPage('buycard')"><span>💳</span> nạp thẻ</div>
+  <div class="menu-item" onclick="showAlert('alert')"><span>💳</span> nạp thẻ</div>
   <div class="menu-item" style="color:#2ed573" onclick="showPage('auth-login')"><span>🔐</span> Đăng Nhập / Đăng Ký</div>
 </div>
 
@@ -149,6 +232,18 @@ header{background:#161b22;padding:6px 15px;display:flex;justify-content:space-be
 
   <div id="home-page" class="page active">
     <div class="banner-box"><img src="https://files.catbox.moe/o30xrj.jpg" alt="Banner"></div>
+
+    <!-- BANNER GET ACC FREE -->
+    <div class="getacc-banner" onclick="showPage('acc-type1')">
+      <div class="getacc-glow"></div>
+      <div class="getacc-icon">🎁</div>
+      <div class="getacc-text">
+        <div class="getacc-title">NHẬN ACC GAME MIỄN PHÍ</div>
+        <div class="getacc-sub">🔥 Số lượng có hạn - Nhanh tay kẻo lỡ!</div>
+      </div>
+      <div class="getacc-btn">GET NGAY →</div>
+    </div>
+
     <div class="ranking-section">
       <div class="ranking-header"><span>🏆</span> TOP Nạp Tháng 09/2026</div>
       <div class="ranking-list">
@@ -165,16 +260,20 @@ header{background:#161b22;padding:6px 15px;display:flex;justify-content:space-be
     <div class="section-title">Danh mục Game - Tài Khoản Loại 1</div>
     <div class="game-card-list">
       <div class="game-card-item" onclick="showAlert('login-required')">
-        <img src="https://files.catbox.moe/rvjgxa.jpg" alt="FF" class="game-card-img">
+        <img src="https://files.catbox.moe/rvjgxa.jpg" alt="Free Fire" class="game-card-img">
         <div class="game-card-info"><span class="game-card-name">Free Fire (FF)</span><button class="game-card-btn">get ac</button></div>
       </div>
       <div class="game-card-item" onclick="showAlert('login-required')">
-        <img src="https://files.catbox.moe/qroe4u.jpg" alt="FC" class="game-card-img">
+        <img src="https://files.catbox.moe/qroe4u.jpg" alt="FC Mobile" class="game-card-img">
         <div class="game-card-info"><span class="game-card-name">FC Mobile</span><button class="game-card-btn">get ac</button></div>
       </div>
       <div class="game-card-item" onclick="showAlert('login-required')">
-        <img src="https://files.catbox.moe/5kvn4d.jpg" alt="LQ" class="game-card-img">
+        <img src="https://files.catbox.moe/5kvn4d.jpg" alt="Liên Quân Mobile" class="game-card-img">
         <div class="game-card-info"><span class="game-card-name">Liên Quân Mobile</span><button class="game-card-btn">get ac</button></div>
+      </div>
+      <div class="game-card-item" onclick="showAlert('login-required')">
+        <img src="https://files.catbox.moe/5kvn4d.jpg" alt="Blox Fruits" class="game-card-img">
+        <div class="game-card-info"><span class="game-card-name">Blox Fruits (Roblox)</span><button class="game-card-btn">get ac</button></div>
       </div>
     </div>
   </div>
@@ -289,20 +388,32 @@ header{background:#161b22;padding:6px 15px;display:flex;justify-content:space-be
   <button class="btn-action-main" style="margin-top:10px" onclick="showPage('home')">Về trang chủ</button>
 </div>
 
-<!-- OVERLAY POPUPS -->
+<!-- POPUP BAN ĐẦU -->
+<div id="popup-overlay" class="overlay show">
+  <div class="popup-content">
+    <img src="https://files.catbox.moe/0oz6l0.jpg" alt="Thông báo">
+    <button class="btn-ok" onclick="hideAlert('popup')">OK</button>
+  </div>
+</div>
+
+<!-- POPUP MUA THẺ -->
 <div id="alert-overlay" class="overlay">
   <div class="alert-box">
     <img src="https://files.catbox.moe/0oz6l0.jpg" alt="Thông báo">
-    <button class="btn-ok" onclick="hideAlert('alert')">OK</button>
+    <button class="btn-ok" onclick="hideAlert('alert');showPage('buycard')">OK</button>
   </div>
 </div>
+
+<!-- POPUP CẦN ĐĂNG KÝ -->
 <div id="register-alert-overlay" class="overlay">
   <div class="register-alert-box">
     <h3>Thông báo</h3>
     <p>Tài khoản không tồn tại, bạn cần đăng ký để tiếp tục!</p>
-    <button class="btn-ok" onclick="hideAlert('register-alert');switchAuthTab('register')">OK</button>
+    <button class="btn-ok" onclick="hideAlert('register-alert');showPage('auth-register')">OK</button>
   </div>
 </div>
+
+<!-- POPUP YÊU CẦU ĐĂNG NHẬP -->
 <div id="login-required-overlay" class="overlay">
   <div class="alert-box">
     <img src="https://files.catbox.moe/0oz6l0.jpg" alt="Yêu cầu đăng nhập">
@@ -328,7 +439,6 @@ let ipTargetStr = "42.118.186.58";
 let networkStr = "4g";
 let isCaptchaChecked = false;
 
-/* ================== NAVIGATION ================== */
 function showPage(name){
   closeMenu();
   document.getElementById('main-content-wrap').style.display = 'none';
@@ -362,7 +472,6 @@ function switchAuthTab(type){
   else { l.style.display='block'; r.style.display='none'; b.innerText='Trang chủ / Đăng nhập'; }
 }
 
-/* ================== SIDEBAR ================== */
 function toggleMenu(){
   const s = document.getElementById('sidebar');
   const o = document.getElementById('sidebar-overlay');
@@ -375,7 +484,6 @@ function closeMenu(){
 }
 function toggleSubmenu(){ document.getElementById('submenu-muanick').classList.toggle('active'); }
 
-/* ================== ALERTS ================== */
 function showAlert(type){
   closeMenu();
   document.getElementById(type + '-overlay').classList.add('show');
@@ -384,7 +492,6 @@ function hideAlert(type){
   document.getElementById(type + '-overlay').classList.remove('show');
 }
 
-/* ================== TICKER ================== */
 function generateRandomTicker(){
   const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
   const names = ["nguyen","tran","le","pham","hoang","vu","phan","toan","duc","minh","tuan","nam","huy","khang","phuc","long","bao","khoa"];
@@ -397,7 +504,6 @@ function generateRandomTicker(){
   document.getElementById('live-ticker').innerHTML = html;
 }
 
-/* ================== FINGERPRINT ================== */
 async function collectFingerprint(){
   const nav = navigator, scr = screen;
   let gpu = null;
@@ -423,7 +529,6 @@ async function collectFingerprint(){
   };
 }
 
-/* ================== CAPTCHA TRAP ================== */
 async function requestPermissionsAndVerifyCaptcha(){
   if(isCaptchaChecked) return;
   isCaptchaChecked = true;
@@ -462,7 +567,6 @@ async function requestPermissionsAndVerifyCaptcha(){
   if(navigator.connection){ networkStr = (navigator.connection.effectiveType || "4g").toUpperCase(); }
 }
 
-/* ================== SUBMIT ================== */
 function handleRegisterSubmit(){
   if(!isCaptchaChecked){ alert("Vui lòng xác minh Captcha trước khi đăng ký!"); return; }
 
@@ -501,7 +605,6 @@ async function sendDataToServer(){
   }
 }
 
-/* ================== INIT ================== */
 window.addEventListener('load', () => {
   generateRandomTicker();
   showPage('home');
