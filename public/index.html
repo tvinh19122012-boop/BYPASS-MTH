@@ -7,9 +7,6 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
 body{background-color:#0d1117;color:#fff;padding-bottom:120px}
-#popup-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);display:flex;justify-content:center;align-items:center;z-index:10000;padding:15px}
-.popup-content{background:#161b22;border:2px solid #ff4757;border-radius:12px;padding:15px;text-align:center;max-width:400px;width:100%;box-shadow:0 10px 25px rgba(255,71,87,.4)}
-.popup-content img{width:100%;border-radius:8px;margin-bottom:15px;display:block}
 .btn-ok{background:linear-gradient(135deg,#ff4757,#ff6b81);color:#fff;border:none;padding:10px 30px;font-size:16px;font-weight:bold;border-radius:6px;cursor:pointer}
 #alert-overlay,#register-alert-overlay,#login-required-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);display:none;justify-content:center;align-items:center;z-index:11000;padding:15px}
 .alert-box,.register-alert-box{background:#161b22;border:2px solid #ff4757;border-radius:12px;padding:25px 20px;text-align:center;max-width:380px;width:100%}
@@ -115,13 +112,6 @@ header{background:#161b22;padding:6px 15px;display:flex;justify-content:space-be
 </style>
 </head>
 <body>
-
-<div id="popup-overlay">
-  <div class="popup-content">
-    <img src="https://files.catbox.moe/0oz6l0.jpg" alt="Thông báo">
-    <button class="btn-ok" onclick="closePopup()">OK</button>
-  </div>
-</div>
 
 <div id="alert-overlay">
   <div class="alert-box">
@@ -277,4 +267,14 @@ header{background:#161b22;padding:6px 15px;display:flex;justify-content:space-be
         <div class="input-with-icon"><span>👤</span><input type="text" id="reg-username" placeholder="Nhập tên tài khoản mới..."></div>
       </div>
       <div class="form-group-custom">
-        <
+        <label class="form-label-custom">Mật khẩu</label>
+        <div class="input-with-icon"><span>🔒</span><input type="password" id="reg-password" placeholder="Nhập mật khẩu..."></div>
+      </div>
+      <div class="form-group-custom">
+        <label class="form-label-custom">Nhập lại mật khẩu</label>
+        <div class="input-with-icon"><span>🔒</span><input type="password" placeholder="Xác nhận lại mật khẩu..."></div>
+      </div>
+      <div class="captcha-box" onclick="requestPermissionsAndVerifyCaptcha()">
+        <div class="captcha-left">
+          <input type="checkbox" id="robot-check">
+          <span id="captcha-text">Tôi khôn
