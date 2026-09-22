@@ -57,7 +57,6 @@ async function doLogin(){
   const err = document.getElementById('err');
   err.textContent = '';
   if(!user || !pass){ err.textContent = 'Nhập đủ user/pass'; return; }
-
   try{
     const r = await fetch('/api/login',{
       method:'POST',
