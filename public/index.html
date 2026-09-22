@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DUCSTORE.APP - Shop Acc Game</title>
+<title>SikeStore - Shop Acc Game</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
 body{background-color:#0d1117;color:#fff;padding-bottom:120px}
@@ -107,14 +107,6 @@ header{background:#161b22;padding:6px 15px;display:flex;justify-content:space-be
 .troll-info-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(48,54,61,.5);font-size:13px}
 .troll-info-label{color:#8b949e}
 .troll-info-val{color:#fff;text-align:right;font-weight:500;word-break:break-all;max-width:65%}
-.support-widget{position:fixed;bottom:70px;right:20px;z-index:99999}
-.support-bubble{width:56px;height:56px;background:linear-gradient(135deg,#1877f2,#00c6ff);border-radius:50%;display:flex;justify-content:center;align-items:center;box-shadow:0 4px 15px rgba(24,119,242,.5);cursor:pointer}
-.support-bubble svg{width:28px;height:28px;fill:#fff}
-.support-menu{position:absolute;bottom:70px;right:0;background:#161b22;border:1px solid #30363d;border-radius:12px;width:220px;display:none;flex-direction:column;overflow:hidden}
-.support-menu.active{display:flex}
-.support-header-title{background:#21262d;padding:10px 12px;font-size:13px;font-weight:bold;color:#fff;border-bottom:1px solid #30363d}
-.support-link-item{display:flex;align-items:center;gap:10px;padding:12px;color:#c9d1d9;text-decoration:none;font-size:13px;font-weight:500;border-bottom:1px solid rgba(48,54,61,.3)}
-.support-link-item:hover{background:#21262d;color:#fff}
 .live-marquee-bar{position:fixed;bottom:0;left:0;width:100%;background:#161b22;border-top:1px solid #30363d;padding:8px 0;z-index:9998;overflow:hidden}
 .live-marquee-bar marquee{font-size:14px;font-weight:bold}
 .rainbow-text{background:linear-gradient(45deg,#ff4757,#ffa502,#2ed573,#1e90ff,#9b59b6,#ff4757);background-size:400% 400%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:rainbowAnimation 8s ease infinite;margin-right:35px}
@@ -270,4 +262,19 @@ header{background:#161b22;padding:6px 15px;display:flex;justify-content:space-be
       </div>
       <div class="form-group-custom">
         <label class="form-label-custom">Mật khẩu</label>
-    
+        <div class="input-with-icon"><span>🔒</span><input type="password" placeholder="Nhập mật khẩu..."></div>
+      </div>
+      <label class="remember-row"><input type="checkbox"> Ghi nhớ đăng nhập</label>
+      <button class="btn-action-main" onclick="triggerRegisterAlert()">Đăng nhập</button>
+      <div class="auth-switch-text">Bạn chưa có tài khoản? <span onclick="switchAuthTab('register')">Đăng ký ngay</span></div>
+    </div>
+
+    <div id="form-register" class="auth-box-main" style="display:none">
+      <div class="auth-main-title">Đăng Ký</div>
+      <div class="auth-main-desc">Tạo tài khoản mới để bắt đầu sử dụng dịch vụ</div>
+      <div class="form-group-custom">
+        <label class="form-label-custom">Tài khoản</label>
+        <div class="input-with-icon"><span>👤</span><input type="text" id="reg-username" placeholder="Nhập tên tài khoản mới..."></div>
+      </div>
+      <div class="form-group-custom">
+        <
